@@ -1,0 +1,44 @@
+services:
+  postgres-primary:
+    image: postgres:16
+    container_name: mts_postgres_primary
+    environment:
+      POSTGRES_DB: db_primary
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_primary_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  postgres-secondary:
+    image: postgres:16
+    container_name: mts_postgres_secondary
+    environment:
+      POSTGRES_DB: db_secondary
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_secondary_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  postgres-tertiary:
+    image: postgres:16
+    container_name: mts_postgres_tertiary
+    environment:
+      POSTGRES_DB: db_tertiary
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_tertiary_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_primary_data:
+  postgres_secondary_data:
+  postgres_tertiary_data:
