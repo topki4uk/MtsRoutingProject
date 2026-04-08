@@ -1,5 +1,6 @@
 package org.example.mtsroutingproject.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.example.mtsroutingproject.dto.DataRecordDto;
 import org.example.mtsroutingproject.model.DataRecord;
@@ -23,6 +24,10 @@ public class DataRecordController {
 
   @GetMapping
   public ResponseEntity<List<DataRecordDto>> getByType(@RequestParam("type") Integer type) {
+    if (type == null || type < 0) {
+      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+
     List<DataRecordDto> records = dataRecordService
         .findByType(type)
         .stream()
@@ -39,19 +44,13 @@ public class DataRecordController {
   }
 
   @PostMapping
-  public ResponseEntity<UUID> save(@RequestBody DataRecordDto dataRecordDto) {
-    if (dataRecordDto.getType() < 0) {
-      log.warn("Invalid type {}", dataRecordDto.getType());
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
+  public ResponseEntity<UUID> save(@Valid @RequestBody DataRecordDto dataRecordDto) {
     DataRecord saved = new DataRecord();
     saved.setText(dataRecordDto.getText());
     saved.setType(dataRecordDto.getType());
 
     log.debug("Saving data record {}", saved);
-    dataRecordService.save(saved);
-
-    return ResponseEntity.ok(saved.getId());
+    DataRecord result = dataRecordService.save(saved);
+    return ResponseEntity.ok(result.getId());
   }
 }

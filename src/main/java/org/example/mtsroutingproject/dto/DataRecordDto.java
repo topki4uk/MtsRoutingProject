@@ -1,13 +1,22 @@
 package org.example.mtsroutingproject.dto;
 
+import jakarta.validation.constraints.*;
+import org.springframework.validation.annotation.Validated;
+
 import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * DTO for {@link org.example.mtsroutingproject.model.DataRecord}
  */
+@Validated
 public class DataRecordDto implements Serializable {
+  @NotNull
+  @Min(0)
   private final Integer type;
+
+  @NotBlank
+  @Size(max=1000)
   private final String text;
 
   public DataRecordDto(Integer type, String text) {
