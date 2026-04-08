@@ -27,5 +27,8 @@ jobs:
         java-version: '21'
         distribution: 'adopt'
         cache: maven
+
+    - name: Run Checkstyle
+      run: mvn checkstyle:check
     - name: Build with Maven
       run: mvn -B package --file pom.xml
