@@ -15,6 +15,11 @@ public class FlywayConfig {
   @Value("${spring.flyway.locations}")
   private String location;
 
+  /**
+   * Migrations for first PostgreSQL database
+   * @param dataSource instance for first database
+   * @return result of migration
+   */
   @Bean
   public MigrateResult firstDb(@Qualifier("primaryDataSource") DataSource dataSource) {
     return Flyway.configure()
@@ -24,6 +29,11 @@ public class FlywayConfig {
         .migrate();
   }
 
+  /**
+   * Migrations for second PostgreSQL database
+   * @param dataSource instance for second database
+   * @return result of migration
+   */
   @Bean
   public MigrateResult secondDb(@Qualifier("secondaryDataSource") DataSource dataSource) {
     return Flyway.configure()
@@ -33,6 +43,11 @@ public class FlywayConfig {
         .migrate();
   }
 
+  /**
+   * Migrations for third PostgreSQL database
+   * @param dataSource instance for third database
+   * @return result of migration
+   */
   @Bean
   public MigrateResult thirdDb(@Qualifier("tertiaryDataSource") DataSource dataSource) {
     return Flyway.configure()

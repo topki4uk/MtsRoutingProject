@@ -1,6 +1,12 @@
 package org.example.mtsroutingproject.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Column;
+
 import org.example.mtsroutingproject.dto.DataRecordDto;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -57,6 +63,10 @@ public class DataRecord {
     this.id = id;
   }
 
+  /**
+   * Convert entity to DTO
+   * @return DTO object
+   */
   public DataRecordDto toDto() {
     return new DataRecordDto(type, text);
   }

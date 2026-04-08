@@ -35,11 +35,21 @@ public class DataRecordService {
     throw new InvalidDataSourceTypeException(type);
   }
 
+  /**
+   * Constructor of service
+   * @param dataRecordRepository record repository
+   * @param transactionTemplate transaction template
+   */
   public DataRecordService(DataRecordRepository dataRecordRepository, TransactionTemplate transactionTemplate) {
     this.dataRecordRepository = dataRecordRepository;
     this.transactionTemplate = transactionTemplate;
   }
 
+  /**
+   * Find entities in database following type
+   * @param type special int
+   * @return list of entities
+   */
   public List<DataRecord> findByType(Integer type) {
     DataSourceKey key = peekDatabaseByType(type);
     DataSourceContext.setContext(key);
@@ -47,7 +57,7 @@ public class DataRecordService {
     try {
       log.debug("Looking up data records for database {}", key);
       return dataRecordRepository.findByType(type);
-    } catch(DataAccessException e) {
+    } catch (DataAccessException e) {
       log.error(e.getMessage());
       throw e;
     } finally {
@@ -55,6 +65,11 @@ public class DataRecordService {
     }
   }
 
+  /**
+   * Save data in database
+   * @param dataRecord data
+   * @return instance of saved data
+   */
   public DataRecord save(DataRecord dataRecord) {
     DataSourceKey key = peekDatabaseByType(dataRecord.getType());
     DataSourceContext.setContext(key);
@@ -66,7 +81,7 @@ public class DataRecordService {
         throw new RuntimeException("Could not save data record " + dataRecord);
       }
       return result;
-    } catch(DataAccessException e) {
+    } catch (DataAccessException e) {
       log.error(e.getMessage());
       throw e;
     } finally {

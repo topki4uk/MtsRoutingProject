@@ -16,39 +16,70 @@ import java.util.Map;
 @Configuration
 public class DataSourceConfig {
 
+  /**
+   * Special method that allows to load properties for database
+   * @return DataSourceProperties
+   */
   @Bean
   @ConfigurationProperties("spring.datasource.primary")
   public DataSourceProperties primaryProperties() {
     return new DataSourceProperties();
   }
 
+  /**
+   * Initialization data source
+   * @return DataSource
+   */
   @Bean
   public DataSource primaryDataSource() {
     return primaryProperties().initializeDataSourceBuilder().build();
   }
 
+  /**
+   * Special method that allows to load properties for database
+   * @return DataSourceProperties
+   */
   @Bean
   @ConfigurationProperties("spring.datasource.secondary")
   public DataSourceProperties secondaryProperties() {
     return new DataSourceProperties();
   }
 
+  /**
+   * Initialization data source
+   * @return DataSource
+   */
   @Bean
   public DataSource secondaryDataSource() {
     return secondaryProperties().initializeDataSourceBuilder().build();
   }
 
+  /**
+   * Special method that allows to load properties for database
+   * @return DataSourceProperties
+   */
   @Bean
   @ConfigurationProperties("spring.datasource.tertiary")
   public DataSourceProperties tertiaryProperties() {
     return new DataSourceProperties();
   }
 
+  /**
+   * Initialization data source
+   * @return DataSource
+   */
   @Bean
   public DataSource tertiaryDataSource() {
     return tertiaryProperties().initializeDataSourceBuilder().build();
   }
 
+  /**
+   * Setup targets for switching contexts in app
+   * @param primary first db
+   * @param secondary second db
+   * @param tertiary third db
+   * @return routing
+   */
   @Primary
   @Bean
   public DataSource routingDataSource(
