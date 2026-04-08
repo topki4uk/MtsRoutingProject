@@ -12,18 +12,6 @@
         </encoder>
     </appender>
 
-    <!-- вывод в файл -->
-    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/app.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>logs/app.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <maxHistory>30</maxHistory> <!-- хранить 30 дней -->
-        </rollingPolicy>
-        <encoder>
-            <pattern>${LOG_PATTERN}</pattern>
-        </encoder>
-    </appender>
-
     <!-- уровень для вашего пакета -->
     <logger name="org.example.mtsroutingproject" level="DEBUG"/>
 
