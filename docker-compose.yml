@@ -1,4 +1,21 @@
 services:
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_PRIMARY_URL: jdbc:postgresql://postgres-primary:5432/db_primary
+      SPRING_DATASOURCE_PRIMARY_USERNAME: postgres
+      SPRING_DATASOURCE_PRIMARY_PASSWORD: postgres
+
+      SPRING_DATASOURCE_SECONDARY_URL: jdbc:postgresql://postgres-secondary:5432/db_secondary
+      SPRING_DATASOURCE_SECONDARY_USERNAME: postgres
+      SPRING_DATASOURCE_SECONDARY_PASSWORD: postgres
+
+      SPRING_DATASOURCE_TERTIARY_URL: jdbc:postgresql://postgres-tertiary:5432/db_tertiary
+      SPRING_DATASOURCE_TERTIARY_USERNAME: postgres
+      SPRING_DATASOURCE_TERTIARY_PASSWORD: postgres
+
   postgres-primary:
     image: postgres:16
     container_name: mts_postgres_primary
