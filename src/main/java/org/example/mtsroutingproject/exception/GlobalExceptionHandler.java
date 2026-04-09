@@ -28,4 +28,9 @@ public class GlobalExceptionHandler {
   public ResponseEntity<String> handleInvalidDataSourceTypeException(InvalidDataSourceTypeException e) {
     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
   }
+
+  @ExceptionHandler(DataRecordSaveException.class)
+  public ResponseEntity<String> handleDataRecordSaveException(DataRecordSaveException e) {
+    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+  }
 }

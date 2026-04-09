@@ -1,6 +1,7 @@
 package org.example.mtsroutingproject.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.example.mtsroutingproject.exception.DataRecordSaveException;
 import org.example.mtsroutingproject.model.DataRecord;
 import org.example.mtsroutingproject.repository.DataRecordRepository;
 import org.example.mtsroutingproject.routing.DataSourceContext;
@@ -61,7 +62,7 @@ public class DataRecordService {
       log.debug("Saving data record {}", dataRecord);
       DataRecord result = transactionTemplate.execute(status -> dataRecordRepository.save(dataRecord));
       if (result == null) {
-        throw new RuntimeException("Could not save data record " + dataRecord);
+        throw new DataRecordSaveException("Could not save data record " + dataRecord);
       }
       return result;
     } catch (DataAccessException e) {

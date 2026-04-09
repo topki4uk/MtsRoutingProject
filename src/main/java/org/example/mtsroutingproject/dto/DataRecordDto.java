@@ -4,14 +4,15 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
 import java.io.Serializable;
-import java.util.Objects;
 
 /**
  * DTO for {@link org.example.mtsroutingproject.model.DataRecord}
  */
+@Data
 @Validated
 public class DataRecordDto implements Serializable {
   @NotNull
@@ -30,38 +31,5 @@ public class DataRecordDto implements Serializable {
   public DataRecordDto(Integer type, String text) {
     this.type = type;
     this.text = text;
-  }
-
-  public Integer getType() {
-    return type;
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    DataRecordDto entity = (DataRecordDto) o;
-    return Objects.equals(this.type, entity.type) &&
-        Objects.equals(this.text, entity.text);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(type, text);
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + "(" +
-        "type = " + type + ", " +
-        "text = " + text + ")";
   }
 }

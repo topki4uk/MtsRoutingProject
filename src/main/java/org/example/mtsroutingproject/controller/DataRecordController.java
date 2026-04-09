@@ -44,10 +44,6 @@ public class DataRecordController {
    */
   @GetMapping
   public ResponseEntity<List<DataRecordDto>> getByType(@RequestParam("type") Integer type) {
-    if (type == null || type < 0) {
-      return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
-
     List<DataRecordDto> records = dataRecordService
         .findByType(type)
         .stream()
