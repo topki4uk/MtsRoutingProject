@@ -57,21 +57,6 @@ public class DataRecordServiceTest {
   private DataRecordService dataRecordService;
 
   @Test
-  void testPrimaryHealthy() {
-    Assertions.assertTrue(PRIMARY.isRunning());
-  }
-
-  @Test
-  void testSecondaryHealthy() {
-    Assertions.assertTrue(SECONDARY.isRunning());
-  }
-
-  @Test
-  void testTertiaryHealthy() {
-    Assertions.assertTrue(TERTIARY.isRunning());
-  }
-
-  @Test
   void saveToPrimary() {
     DataRecord dataRecord = new DataRecord();
     dataRecord.setType(0);

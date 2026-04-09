@@ -7,6 +7,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Column;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.example.mtsroutingproject.dto.DataRecordDto;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,6 +17,9 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
+@NoArgsConstructor
+@Getter
+@Setter
 @Table(name = "data_records")
 public class DataRecord {
   @Id
@@ -31,36 +37,14 @@ public class DataRecord {
   @Column(name = "created_at", nullable = false, updatable = false)
   private LocalDateTime createdAt;
 
-  public Integer getType() {
-    return type;
-  }
-
-  public void setType(Integer type) {
-    this.type = type;
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
-  }
-
-  public LocalDateTime getCreatedAt() {
-    return createdAt;
-  }
-
-  public void setCreatedAt(LocalDateTime createdAt) {
-    this.createdAt = createdAt;
-  }
-
-  public UUID getId() {
-    return id;
-  }
-
-  public void setId(UUID id) {
-    this.id = id;
+  /**
+   * Produce entity from DTO
+   */
+  public static DataRecord fromDto(DataRecordDto dto) {
+    DataRecord result = new DataRecord();
+    result.setText(dto.getText());
+    result.setType(dto.getType());
+    return result;
   }
 
   /**

@@ -66,12 +66,10 @@ public class DataRecordController {
    */
   @PostMapping
   public ResponseEntity<UUID> save(@Valid @RequestBody DataRecordDto dataRecordDto) {
-    DataRecord saved = new DataRecord();
-    saved.setText(dataRecordDto.getText());
-    saved.setType(dataRecordDto.getType());
+    DataRecord saved = DataRecord.fromDto(dataRecordDto);
 
     log.debug("Saving data record {}", saved);
     DataRecord result = dataRecordService.save(saved);
-    return ResponseEntity.ok(result.getId());
+    return new ResponseEntity<>(result.getId(), HttpStatus.CREATED);
   }
 }
