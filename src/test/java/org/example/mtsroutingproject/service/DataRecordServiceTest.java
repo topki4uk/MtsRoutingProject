@@ -1,7 +1,9 @@
 package org.example.mtsroutingproject.service;
 
 import org.example.mtsroutingproject.model.DataRecord;
+import org.example.mtsroutingproject.repository.DataRecordRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -55,6 +57,14 @@ public class DataRecordServiceTest {
 
   @Autowired
   private DataRecordService dataRecordService;
+
+  @Autowired
+  private DataRecordRepository dataRecordRepository;
+
+  @BeforeEach
+  void setUp() {
+    dataRecordRepository.deleteAll();
+  }
 
   @Test
   void saveToPrimary() {

@@ -3,6 +3,7 @@ package org.example.mtsroutingproject.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.example.mtsroutingproject.dto.DataRecordDto;
+import org.example.mtsroutingproject.exception.GlobalExceptionHandler;
 import org.example.mtsroutingproject.model.DataRecord;
 import org.example.mtsroutingproject.service.DataRecordService;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,6 +36,7 @@ public class DataRecordControllerTest {
   void setUp() {
     mvc = MockMvcBuilders
         .standaloneSetup(new DataRecordController(dataRecordService))
+        .setControllerAdvice(new GlobalExceptionHandler())
         .build();
   }
 
@@ -85,5 +87,14 @@ public class DataRecordControllerTest {
         .contentType(MediaType.APPLICATION_JSON)
         .content("{}"))
         .andExpect(status().isBadRequest());
+  }
+
+  @Test
+  void saveReturns400NegativeType() throws Exception {
+    String body = "{\"type\": -1, \"text\": \"hello\"}";
+    mvc.perform(post("/api/data")
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(body)
+    ).andExpect(status().isBadRequest());
   }
 }

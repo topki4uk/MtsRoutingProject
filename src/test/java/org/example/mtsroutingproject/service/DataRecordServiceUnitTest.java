@@ -47,6 +47,13 @@ public class DataRecordServiceUnitTest {
   }
 
   @Test
+  void findByTypeEmptyList() {
+    List<DataRecord> found = service.findByType(999);
+    Assertions.assertNotNull(found);
+    Assertions.assertTrue(found.isEmpty());
+  }
+
+  @Test
   void saveReturnsRecord() {
     DataRecord dataRecord = new DataRecord();
     dataRecord.setType(1);
