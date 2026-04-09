@@ -73,27 +73,30 @@ public class DataSourceConfig {
     return tertiaryProperties().initializeDataSourceBuilder().build();
   }
 
+  @Bean
+  @Qualifier("routingTargets")
+  public Map<DataSourceKey, DataSource> dataSources(
+      @Qualifier("primaryDataSource") DataSource primary,
+      @Qualifier("secondaryDataSource") DataSource secondary,
+      @Qualifier("tertiaryDataSource") DataSource tertiary
+  ) {
+    return Map.of(
+        DataSourceKey.PRIMARY, primary,
+        DataSourceKey.SECONDARY, secondary,
+        DataSourceKey.TERTIARY, tertiary
+    );
+  }
+
   /**
    * Setup targets for switching contexts in app
-   * @param primary first db
-   * @param secondary second db
-   * @param tertiary third db
    * @return routing
    */
   @Primary
   @Bean
-  public DataSource routingDataSource(
-      @Qualifier("primaryDataSource") DataSource primary,
-      @Qualifier("secondaryDataSource") DataSource secondary,
-      @Qualifier("tertiaryDataSource") DataSource tertiary) {
-    Map<Object, Object> targets = new HashMap<>();
-    targets.put(DataSourceKey.PRIMARY, primary);
-    targets.put(DataSourceKey.SECONDARY, secondary);
-    targets.put(DataSourceKey.TERTIARY, tertiary);
-
+  public DataSource routingDataSource(@Qualifier("routingTargets") Map<DataSourceKey, DataSource> dataSources) {
     RoutingDataSource routing = new RoutingDataSource();
-    routing.setTargetDataSources(targets);
-    routing.setDefaultTargetDataSource(primary);
+    routing.setTargetDataSources(new HashMap<>(dataSources));
+    routing.setDefaultTargetDataSource(dataSources.get(DataSourceKey.PRIMARY));
     return routing;
   }
 }

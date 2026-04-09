@@ -1,12 +1,10 @@
 package org.example.mtsroutingproject.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.example.mtsroutingproject.exception.InvalidDataSourceTypeException;
 import org.example.mtsroutingproject.model.DataRecord;
 import org.example.mtsroutingproject.repository.DataRecordRepository;
 import org.example.mtsroutingproject.routing.DataSourceContext;
 import org.example.mtsroutingproject.routing.DataSourceKey;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -18,22 +16,7 @@ import java.util.List;
 public class DataRecordService {
 
   private final TransactionTemplate transactionTemplate;
-  @Value("${spring.application.database-count:3}")
-  private Integer databaseCount;
-
   private final DataRecordRepository dataRecordRepository;
-
-  private DataSourceKey peekDatabaseByType(Integer type) {
-    int preparedKey = type % databaseCount;
-
-    for (DataSourceKey key : DataSourceKey.values()) {
-      if (preparedKey == key.getKey()) {
-        return key;
-      }
-    }
-
-    throw new InvalidDataSourceTypeException(type);
-  }
 
   /**
    * Constructor of service
@@ -51,7 +34,7 @@ public class DataRecordService {
    * @return list of entities
    */
   public List<DataRecord> findByType(Integer type) {
-    DataSourceKey key = peekDatabaseByType(type);
+    DataSourceKey key = DataSourceKey.fromType(type);
     DataSourceContext.setContext(key);
 
     try {
@@ -71,7 +54,7 @@ public class DataRecordService {
    * @return instance of saved data
    */
   public DataRecord save(DataRecord dataRecord) {
-    DataSourceKey key = peekDatabaseByType(dataRecord.getType());
+    DataSourceKey key = DataSourceKey.fromType(dataRecord.getType());
     DataSourceContext.setContext(key);
 
     try {
