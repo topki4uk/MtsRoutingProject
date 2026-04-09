@@ -11,7 +11,6 @@ public class GlobalExceptionHandler {
 
   /**
    * Handle errors from controller in DataRecordDto
-   * @param e exception
    * @return BAD_REQUEST
    */
   @ExceptionHandler(ConstraintViolationException.class)
@@ -21,7 +20,6 @@ public class GlobalExceptionHandler {
 
   /**
    * Handle error if failed to peek database
-   * @param e exception
    * @return BAD_REQUEST
    */
   @ExceptionHandler(InvalidDataSourceTypeException.class)
@@ -29,6 +27,10 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
   }
 
+  /**
+   * Handle error if failed to save instance in database
+   * @return BAD_REQUEST
+   */
   @ExceptionHandler(DataRecordSaveException.class)
   public ResponseEntity<String> handleDataRecordSaveException(DataRecordSaveException e) {
     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);

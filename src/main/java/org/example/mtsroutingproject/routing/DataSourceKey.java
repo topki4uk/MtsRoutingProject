@@ -24,6 +24,11 @@ public enum DataSourceKey {
       Collectors.toUnmodifiableMap(DataSourceKey::getKey, Function.identity())
   );
 
+  /**
+   * Optimized method for getting DataSourceKey by type
+   * @param key special integer
+   * @return peeked data source
+   */
   public static DataSourceKey fromType(int key) {
     int preparedKey = key % values().length;
     DataSourceKey result = KEY_MAP.get(preparedKey);

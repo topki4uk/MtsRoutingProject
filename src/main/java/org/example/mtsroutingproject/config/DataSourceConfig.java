@@ -73,6 +73,10 @@ public class DataSourceConfig {
     return tertiaryProperties().initializeDataSourceBuilder().build();
   }
 
+  /**
+   * Sign here your datasources
+   * @return map of SourceKey and SataSource
+   */
   @Bean
   @Qualifier("routingTargets")
   public Map<DataSourceKey, DataSource> dataSources(
