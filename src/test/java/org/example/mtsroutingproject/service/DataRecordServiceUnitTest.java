@@ -40,7 +40,7 @@ public class DataRecordServiceUnitTest {
   @Test
   void findByTypeContext() {
     when(repository.findByType(any(Integer.class)))
-        .thenThrow(new InvalidDataSourceTypeException(any(Integer.class)));
+        .thenThrow(new InvalidDataSourceTypeException(0));
 
     Assertions.assertThrows(InvalidDataSourceTypeException.class, () -> service.findByType(0));
     Assertions.assertNull(DataSourceContext.getContext());
