@@ -3,26 +3,16 @@ services:
     build: .
     ports:
       - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_PRIMARY_URL: jdbc:postgresql://postgres-primary:5432/db_primary
-      SPRING_DATASOURCE_PRIMARY_USERNAME: postgres
-      SPRING_DATASOURCE_PRIMARY_PASSWORD: postgres
-
-      SPRING_DATASOURCE_SECONDARY_URL: jdbc:postgresql://postgres-secondary:5432/db_secondary
-      SPRING_DATASOURCE_SECONDARY_USERNAME: postgres
-      SPRING_DATASOURCE_SECONDARY_PASSWORD: postgres
-
-      SPRING_DATASOURCE_TERTIARY_URL: jdbc:postgresql://postgres-tertiary:5432/db_tertiary
-      SPRING_DATASOURCE_TERTIARY_USERNAME: postgres
-      SPRING_DATASOURCE_TERTIARY_PASSWORD: postgres
+    env_file:
+      - .env
 
   postgres-primary:
     image: postgres:16
-    container_name: mts_postgres_primary
+    container_name: mipt_postgres_primary
     environment:
       POSTGRES_DB: db_primary
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${SPRING_DATASOURCE_PRIMARY_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_PRIMARY_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
@@ -31,11 +21,11 @@ services:
 
   postgres-secondary:
     image: postgres:16
-    container_name: mts_postgres_secondary
+    container_name: mipt_postgres_secondary
     environment:
       POSTGRES_DB: db_secondary
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${SPRING_DATASOURCE_SECONDARY_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_SECONDARY_PASSWORD}
     ports:
       - "5433:5432"
     volumes:
@@ -44,11 +34,11 @@ services:
 
   postgres-tertiary:
     image: postgres:16
-    container_name: mts_postgres_tertiary
+    container_name: mipt_postgres_tertiary
     environment:
       POSTGRES_DB: db_tertiary
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${SPRING_DATASOURCE_TERTIARY_USERNAME}
+      POSTGRES_PASSWORD: ${SPRING_DATASOURCE_TERTIARY_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
