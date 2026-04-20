@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MtsRoutingProject</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300..700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root, [data-theme="light"] {
+            --color-bg:             #f7f6f2;
+            --color-surface:        #f9f8f5;
+            --color-surface-2:      #fbfbf9;
+            --color-surface-offset: #edeae5;
+            --color-border:         #d4d1ca;
+            --color-text:           #28251d;
+            --color-text-muted:     #7a7974;
+            --color-text-faint:     #bab9b4;
+            --color-primary:        #01696f;
+            --color-primary-hover:  #0c4e54;
+            --color-primary-hl:     #cedcd8;
+            --color-success:        #437a22;
+            --color-blue:           #006494;
+            --color-orange:         #da7101;
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.12);
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+            --radius-xl: 1rem;
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: 180ms cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        [data-theme="dark"] {
+            --color-bg:             #0f0f0d;
+            --color-surface:        #161614;
+            --color-surface-2:      #1d1c1a;
+            --color-surface-offset: #242320;
+            --color-border:         #2e2d2a;
+            --color-text:           #e8e6e1;
+            --color-text-muted:     #7a7876;
+            --color-text-faint:     #4a4947;
+            --color-primary:        #3d9da8;
+            --color-primary-hover:  #5ab4bc;
+            --color-primary-hl:     #1e3535;
+            --color-success:        #6daa45;
+            --color-blue:           #5591c7;
+            --color-orange:         #fdab43;
+            --shadow-md: 0 4px 12px rgba(0,0,0,0.35);
+            --shadow-lg: 0 12px 32px rgba(0,0,0,0.5);
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            font-family: var(--font-body);
+            font-size: 1rem;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            min-height: 100dvh;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        /* ── HEADER ── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: color-mix(in oklab, var(--color-bg) 85%, transparent);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 0 clamp(1rem, 5vw, 3rem);
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--color-text);
+            text-decoration: none;
+        }
+
+        .logo svg { color: var(--color-primary); flex-shrink: 0; }
+
+        nav { display: flex; align-items: center; gap: 0.25rem; }
+
+        nav a {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            text-decoration: none;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--radius-md);
+            transition: color var(--transition), background var(--transition);
+        }
+        nav a:hover { color: var(--color-text); background: var(--color-surface-offset); }
+
+        .theme-btn {
+            background: none;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            width: 34px; height: 34px;
+            display: grid; place-items: center;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            margin-left: 0.5rem;
+            transition: color var(--transition), border-color var(--transition), background var(--transition);
+        }
+        .theme-btn:hover { color: var(--color-text); background: var(--color-surface-offset); }
+
+        /* ── HERO ── */
+        .hero {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: clamp(4rem, 10vw, 8rem) clamp(1rem, 5vw, 2rem) clamp(3rem, 6vw, 5rem);
+            text-align: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--color-primary);
+            background: var(--color-primary-hl);
+            border-radius: 9999px;
+            padding: 0.35rem 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.25rem;
+        }
+
+        .hero h1 span { color: var(--color-primary); }
+
+        .hero p {
+            font-size: clamp(1rem, 2vw, 1.2rem);
+            color: var(--color-text-muted);
+            max-width: 60ch;
+            margin: 0 auto 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.65rem 1.4rem;
+            border-radius: var(--radius-md);
+            font-size: 0.875rem;
+            font-weight: 500;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background var(--transition), color var(--transition), box-shadow var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: #fff;
+        }
+        .btn-primary:hover { background: var(--color-primary-hover); box-shadow: var(--shadow-md); }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        .btn-outline:hover { background: var(--color-surface-offset); }
+
+        /* ── ARCH DIAGRAM ── */
+        .arch-section {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 clamp(1rem, 5vw, 2rem) clamp(3rem, 6vw, 5rem);
+        }
+
+        .arch-diagram {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: clamp(1.5rem, 4vw, 2.5rem);
+            box-shadow: var(--shadow-md);
+            overflow-x: auto;
+        }
+
+        .arch-flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            min-width: 500px;
+        }
+
+        .arch-node {
+            border-radius: var(--radius-lg);
+            padding: 0.75rem 1.25rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .node-client  { background: var(--color-surface-offset); color: var(--color-text); border: 1px solid var(--color-border); }
+        .node-app     { background: var(--color-primary-hl); color: var(--color-primary); border: 1px solid var(--color-primary); }
+        .node-router  { background: color-mix(in oklab, var(--color-blue) 15%, transparent); color: var(--color-blue); border: 1px solid var(--color-blue); }
+        .node-db1     { background: color-mix(in oklab, var(--color-success) 15%, transparent); color: var(--color-success); border: 1px solid var(--color-success); }
+        .node-db2     { background: color-mix(in oklab, var(--color-success) 15%, transparent); color: var(--color-success); border: 1px solid var(--color-success); }
+        .node-db3     { background: color-mix(in oklab, var(--color-success) 15%, transparent); color: var(--color-success); border: 1px solid var(--color-success); }
+
+        .arch-arrow {
+            color: var(--color-text-faint);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        .arch-split {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-start;
+        }
+
+        .arch-label {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--color-text-faint);
+            margin-top: 1.25rem;
+            font-family: var(--font-mono);
+        }
+
+        /* ── SECTION ── */
+        section {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 0 clamp(1rem, 5vw, 2rem) clamp(3rem, 6vw, 5rem);
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text-faint);
+            margin-bottom: 0.75rem;
+        }
+
+        .section-title {
+            font-size: clamp(1.4rem, 3vw, 2rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.75rem;
+        }
+
+        .section-desc {
+            color: var(--color-text-muted);
+            font-size: 1rem;
+            max-width: 60ch;
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        /* ── ROUTING LOGIC CARD ── */
+        .routing-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .routing-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.875rem;
+        }
+
+        .routing-table th {
+            text-align: left;
+            color: var(--color-text-faint);
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            padding: 0 0.75rem 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .routing-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--color-border);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+        }
+
+        .routing-table tr:last-child td { border-bottom: none; }
+        .routing-table tr:hover td { background: var(--color-surface-offset); }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+        }
+
+        .badge-primary { background: var(--color-primary-hl); color: var(--color-primary); }
+        .badge-blue    { background: color-mix(in oklab, var(--color-blue) 15%, transparent); color: var(--color-blue); }
+        .badge-orange  { background: color-mix(in oklab, var(--color-orange) 15%, transparent); color: var(--color-orange); }
+
+        /* ── API ENDPOINTS ── */
+        .endpoints { display: flex; flex-direction: column; gap: 1rem; }
+
+        .endpoint-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            box-shadow: var(--shadow-md);
+            transition: box-shadow var(--transition);
+        }
+        .endpoint-card:hover { box-shadow: var(--shadow-lg); }
+
+        .method-badge {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.3rem 0.55rem;
+            border-radius: var(--radius-md);
+            flex-shrink: 0;
+            min-width: 48px;
+            text-align: center;
+            letter-spacing: 0.03em;
+        }
+
+        .method-get  { background: color-mix(in oklab, var(--color-blue) 18%, transparent); color: var(--color-blue); }
+        .method-post { background: color-mix(in oklab, var(--color-success) 18%, transparent); color: var(--color-success); }
+
+        .endpoint-path {
+            font-family: var(--font-mono);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 0.3rem;
+        }
+
+        .endpoint-desc {
+            font-size: 0.82rem;
+            color: var(--color-text-muted);
+            line-height: 1.5;
+        }
+
+        .endpoint-param {
+            margin-top: 0.5rem;
+            font-size: 0.78rem;
+            color: var(--color-text-faint);
+            font-family: var(--font-mono);
+        }
+
+        .endpoint-param span {
+            color: var(--color-orange);
+        }
+
+        /* ── TECH STACK ── */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
+            gap: 0.75rem;
+        }
+
+        .tech-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: background var(--transition), box-shadow var(--transition);
+        }
+        .tech-card:hover { background: var(--color-surface-offset); box-shadow: var(--shadow-md); }
+
+        .tech-icon {
+            width: 32px; height: 32px;
+            border-radius: var(--radius-md);
+            display: grid; place-items: center;
+            flex-shrink: 0;
+            font-size: 1rem;
+        }
+
+        .tech-version {
+            margin-left: auto;
+            font-size: 0.7rem;
+            color: var(--color-text-faint);
+            font-family: var(--font-mono);
+        }
+
+        /* ── QUICK START ── */
+        .quickstart {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+        }
+
+        .qs-step {
+            display: flex;
+            gap: 1.25rem;
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--color-border);
+            align-items: flex-start;
+        }
+        .qs-step:last-child { border-bottom: none; }
+
+        .qs-num {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            background: var(--color-primary-hl);
+            color: var(--color-primary);
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: grid; place-items: center;
+            flex-shrink: 0;
+            margin-top: 0.1rem;
+        }
+
+        .qs-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+        }
+
+        .qs-code {
+            background: var(--color-surface-offset);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 0.5rem 0.85rem;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--color-primary);
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
+        .qs-note {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 0.35rem;
+            line-height: 1.5;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            border-top: 1px solid var(--color-border);
+            padding: 2rem clamp(1rem, 5vw, 3rem);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            color: var(--color-text-faint);
+            font-size: 0.8rem;
+            max-width: 100%;
+        }
+
+        footer a {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        footer a:hover { color: var(--color-primary); }
+
+        .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+        .divider-section { border-top: 1px solid var(--color-border); }
+
+        @media (max-width: 600px) {
+            nav a { display: none; }
+            .arch-flow { min-width: 340px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+    <a class="logo" href="#">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-label="Logo">
+            <circle cx="12" cy="5" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="19" cy="19" r="2"/>
+            <path d="M12 7v4m0 0-5 6m5-6 5 6"/>
+        </svg>
+        MtsRoutingProject
+    </a>
+    <nav>
+        <a href="#how-it-works">Архитектура</a>
+        <a href="#api">API</a>
+        <a href="#stack">Стек</a>
+        <a href="#quickstart">Запуск</a>
+        <button class="theme-btn" data-theme-toggle aria-label="Переключить тему">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+    </nav>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+        Spring Boot · Java 21 · PostgreSQL 16
+    </div>
+    <h1>Маршрутизация запросов<br>между <span>тремя базами данных</span></h1>
+    <p>REST-сервис, который динамически выбирает одну из трёх PostgreSQL-баз на основе числового типа записи. Один запрос — один источник данных, прозрачно и автоматически.</p>
+    <div class="hero-actions">
+        <a class="btn btn-primary" href="/swagger-ui.html" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            Swagger UI
+        </a>
+        <a class="btn btn-outline" href="https://github.com/topki4uk/MtsRoutingProject" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58v-2.04c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.74.08-.74 1.21.09 1.85 1.24 1.85 1.24 1.07 1.84 2.81 1.31 3.5 1 .11-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02 0 2.04.13 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.21.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+        </a>
+        <a class="btn btn-outline" href="/actuator/health" target="_blank" rel="noopener noreferrer">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            Health Check
+        </a>
+    </div>
+</div>
+
+<!-- ARCHITECTURE DIAGRAM -->
+<div class="arch-section" id="how-it-works">
+    <div class="arch-diagram">
+        <div class="arch-flow">
+            <div class="arch-node node-client">HTTP Client</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node node-app">Spring Boot<br>:8080</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-node node-router">RoutingDataSource<br>type % 3</div>
+            <div class="arch-arrow">→</div>
+            <div class="arch-split">
+                <div class="arch-node node-db1">PRIMARY :5432<br>type % 3 = 0</div>
+                <div class="arch-node node-db2">SECONDARY :5433<br>type % 3 = 1</div>
+                <div class="arch-node node-db3">TERTIARY :5434<br>type % 3 = 2</div>
+            </div>
+        </div>
+        <p class="arch-label">AbstractRoutingDataSource · DataSourceContext (ThreadLocal) · DataSourceKey enum</p>
+    </div>
+</div>
+
+<!-- HOW ROUTING WORKS -->
+<section>
+    <p class="section-label">Логика маршрутизации</p>
+    <h2 class="section-title">Как выбирается база данных?</h2>
+    <p class="section-desc">Каждый запрос несёт числовой параметр <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--color-primary)">type</code>. Перед выполнением запроса к БД сервис вычисляет <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--color-primary)">type&nbsp;%&nbsp;3</code> и через <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--color-primary)">ThreadLocal</code> устанавливает нужный источник.</p>
+    <div class="routing-card">
+        <table class="routing-table">
+            <thead>
+            <tr>
+                <th>Значение type</th>
+                <th>type % 3</th>
+                <th>DataSourceKey</th>
+                <th>PostgreSQL</th>
+                <th>Порт</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>0, 3, 6, 9 …</td>
+                <td>0</td>
+                <td><span class="badge badge-primary">PRIMARY</span></td>
+                <td>db_primary</td>
+                <td>5432</td>
+            </tr>
+            <tr>
+                <td>1, 4, 7, 10 …</td>
+                <td>1</td>
+                <td><span class="badge badge-blue">SECONDARY</span></td>
+                <td>db_secondary</td>
+                <td>5433</td>
+            </tr>
+            <tr>
+                <td>2, 5, 8, 11 …</td>
+                <td>2</td>
+                <td><span class="badge badge-orange">TERTIARY</span></td>
+                <td>db_tertiary</td>
+                <td>5434</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<!-- API -->
+<section id="api" class="divider-section" style="padding-top:clamp(3rem,6vw,5rem)">
+    <p class="section-label">REST API</p>
+    <h2 class="section-title">Эндпоинты</h2>
+    <p class="section-desc">Все маршруты доступны по базовому пути <code style="font-family:var(--font-mono);font-size:0.85em;color:var(--color-primary)">/api/data</code>. Полная документация — в Swagger UI.</p>
+    <div class="endpoints">
+        <div class="endpoint-card">
+            <span class="method-badge method-get">GET</span>
+            <div>
+                <div class="endpoint-path">/api/data?type={n}</div>
+                <div class="endpoint-desc">Возвращает список записей из базы данных, соответствующей типу. Если записей нет — <code style="font-family:var(--font-mono);font-size:0.82em">404 Not Found</code>.</div>
+                <div class="endpoint-param">Query param: <span>type</span> (Integer, required) — определяет целевую БД</div>
+            </div>
+        </div>
+        <div class="endpoint-card">
+            <span class="method-badge method-post">POST</span>
+            <div>
+                <div class="endpoint-path">/api/data</div>
+                <div class="endpoint-desc">Сохраняет запись в базу данных, выбранную на основе поля <code style="font-family:var(--font-mono);font-size:0.82em">type</code> из тела запроса. Возвращает UUID созданной записи со статусом <code style="font-family:var(--font-mono);font-size:0.82em">201 Created</code>.</div>
+                <div class="endpoint-param">Body: <span>DataRecordDto</span> (JSON) — поля записи, включая type</div>
+            </div>
+        </div>
+        <div class="endpoint-card">
+            <span class="method-badge method-get">GET</span>
+            <div>
+                <div class="endpoint-path">/actuator/health</div>
+                <div class="endpoint-desc">Spring Boot Actuator health check. Возвращает статус приложения и всех зависимостей.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TECH STACK -->
+<section id="stack" class="divider-section" style="padding-top:clamp(3rem,6vw,5rem)">
+    <p class="section-label">Технологии</p>
+    <h2 class="section-title">Стек</h2>
+    <p class="section-desc">Современный Spring-стек с контейнеризацией через Docker и автоматическими миграциями БД.</p>
+    <div class="tech-grid">
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,#e76f00 18%,transparent)">☕</div>
+            Java
+            <span class="tech-version">21 LTS</span>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,#6db33f 18%,transparent)">🍃</div>
+            Spring Boot
+            <span class="tech-version">3.x</span>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,#6db33f 18%,transparent)">📦</div>
+            Spring Data JPA
+            <span class="tech-version"></span>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,#336791 18%,transparent)">🐘</div>
+            PostgreSQL
+            <span class="tech-version">16</span>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,#cc0200 18%,transparent)">🔄</div>
+            Flyway
+            <span class="tech-version">migrations</span>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,#85ea2d 18%,transparent)">🐳</div>
+            Docker Compose
+            <span class="tech-version">2.x</span>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,var(--color-primary) 18%,transparent)">📄</div>
+            Springdoc OpenAPI
+            <span class="tech-version">Swagger</span>
+        </div>
+        <div class="tech-card">
+            <div class="tech-icon" style="background:color-mix(in oklab,var(--color-blue) 18%,transparent)">✅</div>
+            Checkstyle
+            <span class="tech-version">CI</span>
+        </div>
+    </div>
+</section>
+
+<!-- QUICK START -->
+<section id="quickstart" class="divider-section" style="padding-top:clamp(3rem,6vw,5rem)">
+    <p class="section-label">Быстрый старт</p>
+    <h2 class="section-title">Запуск за 3 шага</h2>
+    <p class="section-desc">Для запуска нужен только Docker >= 20.10 и Docker Compose >= 2.0.</p>
+    <div class="quickstart">
+        <div class="qs-step">
+            <div class="qs-num">1</div>
+            <div>
+                <div class="qs-title">Клонировать репозиторий</div>
+                <div class="qs-code">git clone https://github.com/topki4uk/MtsRoutingProject.git</div>
+            </div>
+        </div>
+        <div class="qs-step">
+            <div class="qs-num">2</div>
+            <div>
+                <div class="qs-title">Запустить через Docker Compose</div>
+                <div class="qs-code">docker compose up --build</div>
+                <div class="qs-note">Compose автоматически поднимет три инстанса PostgreSQL и запустит приложение, дождавшись их готовности.</div>
+            </div>
+        </div>
+        <div class="qs-step">
+            <div class="qs-num">3</div>
+            <div>
+                <div class="qs-title">Открыть Swagger UI</div>
+                <div class="qs-code">/swagger-ui.html</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <span>MtsRoutingProject · Java 21 · Spring Boot</span>
+    <div class="footer-links">
+        <a href="https://github.com/topki4uk/MtsRoutingProject" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="/swagger-ui.html" target="_blank" rel="noopener noreferrer">Swagger UI</a>
+        <a href="/actuator/health" target="_blank" rel="noopener noreferrer">Health</a>
+    </div>
+</footer>
+
+<script>
+    (function () {
+        const btn = document.querySelector('[data-theme-toggle]');
+        const html = document.documentElement;
+        let theme = 'dark';
+        html.setAttribute('data-theme', theme);
+
+        function updateIcon() {
+            btn.innerHTML = theme === 'dark'
+                ? '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+                : '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+        }
+
+        btn.addEventListener('click', () => {
+            theme = theme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', theme);
+            updateIcon();
+        });
+
+        updateIcon();
+    })();
+</script>
+</body>
+</html>
