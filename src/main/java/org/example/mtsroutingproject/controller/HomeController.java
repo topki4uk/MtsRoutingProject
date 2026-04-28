@@ -14,4 +14,12 @@ public class HomeController {
     public String home() {
         return "index";
     }
+
+    /**
+     * Verification Yandex Page
+     */
+    @GetMapping("/yandex_3fc84d15b5ff40e9.html")
+    public String yandexVerification() {
+        return "yandex_3fc84d15b5ff40e9";
+    }
 }
