@@ -2,7 +2,8 @@ package org.example.mtsroutingproject.service;
 
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
-import java.lang.IllegalArgumentException;
+
+import org.example.mtsroutingproject.exception.DangerousInputException;
 import org.example.mtsroutingproject.exception.DataRecordSaveException;
 import org.example.mtsroutingproject.model.DataRecord;
 import org.example.mtsroutingproject.repository.DataRecordRepository;
@@ -59,8 +60,9 @@ public class DataRecordService {
   public DataRecord save(DataRecord dataRecord) {
 
     String regex = ".*[';\"\\-\\-#/\\*%].*";
-    if (Pattern.matches(dataRecord.getMessage())) {
-      throw new IllegalArgumentException("Invalid type: Dangerous string");
+    if (Pattern.matches(regex, dataRecord.getText())) {
+      log.debug("Find danger on SQL injection");
+      throw new DangerousInputException("Invalid type: Dangerous string");
     }
 
     DataSourceKey key = DataSourceKey.fromType(dataRecord.getType());

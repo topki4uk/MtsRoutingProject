@@ -28,6 +28,14 @@ public class GlobalExceptionHandler {
   }
 
   /**
+   * Handle error with danger on SQL injection
+   */
+  @ExceptionHandler(DangerousInputException.class)
+  public ResponseEntity<String> handleDangerousInputException(DangerousInputException e) {
+    return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  /**
    * Handle error if failed to save instance in database
    * @return BAD_REQUEST
    */
