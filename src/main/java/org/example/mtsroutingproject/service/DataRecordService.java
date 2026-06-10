@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.example.mtsroutingproject.exception.DangerousInputException;
 import org.example.mtsroutingproject.exception.DataRecordSaveException;
+import org.example.mtsroutingproject.exception.DataSourceUnavailableException;
 import org.example.mtsroutingproject.model.DataRecord;
 import org.example.mtsroutingproject.repository.DataRecordRepository;
 import org.example.mtsroutingproject.routing.DataSourceContext;
@@ -21,15 +22,20 @@ public class DataRecordService {
 
   private final TransactionTemplate transactionTemplate;
   private final DataRecordRepository dataRecordRepository;
+  private final DatabaseHealthService healthService;
 
   /**
    * Constructor of service
    * @param dataRecordRepository record repository
    * @param transactionTemplate transaction template
    */
-  public DataRecordService(DataRecordRepository dataRecordRepository, TransactionTemplate transactionTemplate) {
+  public DataRecordService(
+      DataRecordRepository dataRecordRepository,
+      TransactionTemplate transactionTemplate,
+      DatabaseHealthService healthService) {
     this.dataRecordRepository = dataRecordRepository;
     this.transactionTemplate = transactionTemplate;
+    this.healthService = healthService;
   }
 
   /**
@@ -40,6 +46,11 @@ public class DataRecordService {
   public List<DataRecord> findByType(Integer type) {
     DataSourceKey key = DataSourceKey.fromType(type);
     DataSourceContext.setContext(key);
+
+    // В DataRecordService через healthService:
+    if (!healthService.getAvailableSources().contains(key)) {
+      throw new DataSourceUnavailableException(key, healthService.getAvailableSources());
+    }
 
     try {
       log.debug("Looking up data records for database {}", key);
@@ -67,6 +78,11 @@ public class DataRecordService {
 
     DataSourceKey key = DataSourceKey.fromType(dataRecord.getType());
     DataSourceContext.setContext(key);
+
+    // В DataRecordService через healthService:
+    if (!healthService.getAvailableSources().contains(key)) {
+      throw new DataSourceUnavailableException(key, healthService.getAvailableSources());
+    }
 
     try {
       log.debug("Saving data record {}", dataRecord);

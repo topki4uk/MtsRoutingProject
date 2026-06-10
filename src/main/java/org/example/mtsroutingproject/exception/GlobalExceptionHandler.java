@@ -1,6 +1,7 @@
 package org.example.mtsroutingproject.exception;
 
 import jakarta.validation.ConstraintViolationException;
+import org.example.mtsroutingproject.dto.DataSourceErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,5 +43,18 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(DataRecordSaveException.class)
   public ResponseEntity<String> handleDataRecordSaveException(DataRecordSaveException e) {
     return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+  }
+
+  /**
+   * Handle error if failed to connect with database
+   * @return 503 error
+   */
+  @ExceptionHandler(DataSourceUnavailableException.class)
+  public ResponseEntity<DataSourceErrorResponse> handleDataSourceUnavailable(
+      DataSourceUnavailableException e
+  ) {
+    return ResponseEntity
+        .status(HttpStatus.SERVICE_UNAVAILABLE)
+        .body(DataSourceErrorResponse.of(e.getRequested(), e.getAvailable()));
   }
 }
